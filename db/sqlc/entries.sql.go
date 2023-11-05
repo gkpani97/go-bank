@@ -3,7 +3,7 @@
 //   sqlc v1.23.0
 // source: entries.sql
 
-package authors
+package db
 
 import (
 	"context"

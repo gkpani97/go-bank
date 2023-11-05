@@ -5,7 +5,7 @@ sql:
   engine: "postgresql"
   gen:
     go: 
-      package: "authors"
+      package: "db"
       out: "db/sqlc"
       emit_exact_table_names: false
       emit_json_tags: true
