@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -14,8 +15,11 @@ func TestCreateAccount(t *testing.T){
 		Currency: "USD",
 	}
 
-	account, err := testQueries.CreateAccount(context.Background(), arg)
+	account, err := TestQueries.CreateAccount(context.Background(), arg)
 
+	fmt.Printf("%+v", account)
+
+	
 	require.NoError(t, err)
 	require.NotEmpty(t, account)
 
