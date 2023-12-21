@@ -3,7 +3,6 @@ package db
 import (
 	"context"
 	"database/sql"
-	"fmt"
 	"testing"
 	"time"
 
@@ -19,9 +18,6 @@ func createRandomAccount(t *testing.T) Account{
 	}
 
 	account, err := TestQueries.CreateAccount(context.Background(), arg)
-
-	fmt.Printf("%+v", account)
-
 	
 	require.NoError(t, err)
 	require.NotEmpty(t, account)
