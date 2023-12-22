@@ -9,6 +9,7 @@ import (
 
 func TestTransferTx(t *testing.T) {
 	store := NewStore(testDB)
+	q := store.Queries
 
 	account1 := createRandomAccount(t)
 	account2 := createRandomAccount(t)
@@ -50,7 +51,7 @@ func TestTransferTx(t *testing.T) {
 		require.NotZero(t, transfer.ID)
 		require.NotZero(t, transfer.CreatedAt)
 		
-		_, err = store.GetTransfer(context.Background(), transfer.ID)
+		_, err = q.GetTransfer(context.Background(), transfer.ID)
 		require.NoError(t, err)
 
 		// check entries

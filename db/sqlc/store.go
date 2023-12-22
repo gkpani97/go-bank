@@ -27,7 +27,7 @@ func (store *Store) execTx(ctx context.Context, fn func(*Queries) error) error {
 		return err
 	}
 
-	q := New(tx)
+	q := store.Queries
 	err = fn(q)
 
 	if err == nil {
@@ -67,7 +67,7 @@ func (store *Store) TransferTx(ctx context.Context, arg TransferTxParams) (Trans
 		// 	CreateTransferParams{
 		// 	FromAccountID: arg.FromAccountID,
 		// 	ToAccountID:   arg.ToAccountID,
-		// 	Amount:        arg.Amount,	
+		// 	Amount:        arg.Amount,
 		// })
 
 		if err != nil {
