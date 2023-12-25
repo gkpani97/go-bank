@@ -14,7 +14,7 @@ func TestTransferTx(t *testing.T) {
 
 	account1 := createRandomAccount(t)
 	account2 := createRandomAccount(t)
-	
+
 	fmt.Println(">> before: \n\taccount1 Balance: ", account1.Balance, " account2 Balance: ", account2.Balance)
 
 	// run n concurrent transfer transactions
@@ -38,7 +38,7 @@ func TestTransferTx(t *testing.T) {
 	}
 
 	// check results
-	existed := make(map[int] bool)
+	existed := make(map[int]bool)
 
 	for i := 0; i < n; i++ {
 		err := <-errs
@@ -55,7 +55,7 @@ func TestTransferTx(t *testing.T) {
 		require.Equal(t, amount, transfer.Amount)
 		require.NotZero(t, transfer.ID)
 		require.NotZero(t, transfer.CreatedAt)
-		
+
 		_, err = q.GetTransfer(context.Background(), transfer.ID)
 		require.NoError(t, err)
 
@@ -88,7 +88,7 @@ func TestTransferTx(t *testing.T) {
 		toAccount := result.ToAccount
 		require.NotEmpty(t, toAccount)
 		require.Equal(t, toAccount.ID, account2.ID)
-		
+
 		// check account balance
 		fmt.Println(">> tx: \n\taccount1 Balance: ", fromAccount.Balance, " account2 Balance: ", toAccount.Balance)
 
@@ -96,23 +96,23 @@ func TestTransferTx(t *testing.T) {
 		diff2 := toAccount.Balance - account2.Balance
 		require.Equal(t, diff1, diff2)
 		require.True(t, diff1 > 0)
-		require.True(t, diff1 % amount == 0)
+		require.True(t, diff1%amount == 0)
 
 		k := int(diff1 / amount)
 		require.True(t, k >= 1 && k <= n)
-		require.Contains(t, existed, k)
+		require.NotContains(t, existed, k)
 		existed[k] = true
 	}
 
 	// check for final updated balances
 	updatedAccount1, err := TestQueries.GetAccount(context.Background(), account1.ID)
 	require.NoError(t, err)
-	
+
 	updatedAccount2, err := TestQueries.GetAccount(context.Background(), account2.ID)
 	require.NoError(t, err)
 
 	fmt.Println(">> before: \n\taccount1 Balance: ", updatedAccount1.Balance, " account2 Balance: ", updatedAccount2.Balance)
 
-	require.Equal(t, updatedAccount1.Balance - int64(n) * amount, account1.Balance)
-	require.Equal(t, updatedAccount2.Balance + int64(n) * amount, account2.Balance)
+	require.Equal(t, updatedAccount1.Balance-int64(n)*amount, account1.Balance)
+	require.Equal(t, updatedAccount2.Balance+int64(n)*amount, account2.Balance)
 }
