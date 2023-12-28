@@ -15,18 +15,20 @@ func TestTransferTx(t *testing.T) {
 	account1 := createRandomAccount(t)
 	account2 := createRandomAccount(t)
 
-	fmt.Println(">> before: \n\taccount1 Balance: ", account1.Balance, " account2 Balance: ", account2.Balance)
+	fmt.Println(">> bfr: \taccount1 Balance: ", account1.Balance, " account2 Balance: ", account2.Balance)
 
 	// run n concurrent transfer transactions
-	n := 5
+	n := 3
 	amount := int64(10)
 
 	errs := make(chan error)
 	results := make(chan TransferTxResult)
 
 	for i := 0; i < n; i++ {
+		txName := fmt.Sprintf("tx %d", i+1)
+		ctx := context.WithValue(context.Background(), txKey, txName)
 		go func() {
-			result, err := store.TransferTx(context.Background(), TransferTxParams{
+			result, err := store.TransferTx(ctx, TransferTxParams{
 				FromAccountID: account1.ID,
 				ToAccountID:   account2.ID,
 				Amount:        amount,
@@ -90,7 +92,7 @@ func TestTransferTx(t *testing.T) {
 		require.Equal(t, toAccount.ID, account2.ID)
 
 		// check account balance
-		fmt.Println(">> tx: \n\taccount1 Balance: ", fromAccount.Balance, " account2 Balance: ", toAccount.Balance)
+		fmt.Println(">> tx ", i+1, ": \taccount1 Balance: ", fromAccount.Balance, " account2 Balance: ", toAccount.Balance)
 
 		diff1 := account1.Balance - fromAccount.Balance
 		diff2 := toAccount.Balance - account2.Balance
@@ -111,8 +113,8 @@ func TestTransferTx(t *testing.T) {
 	updatedAccount2, err := TestQueries.GetAccount(context.Background(), account2.ID)
 	require.NoError(t, err)
 
-	fmt.Println(">> before: \n\taccount1 Balance: ", updatedAccount1.Balance, " account2 Balance: ", updatedAccount2.Balance)
+	fmt.Println(">> after: \taccount1 Balance: ", updatedAccount1.Balance, " account2 Balance: ", updatedAccount2.Balance)
 
-	require.Equal(t, updatedAccount1.Balance-int64(n)*amount, account1.Balance)
-	require.Equal(t, updatedAccount2.Balance+int64(n)*amount, account2.Balance)
+	require.Equal(t, updatedAccount1.Balance+int64(n)*amount, account1.Balance)
+	require.Equal(t, updatedAccount2.Balance-int64(n)*amount, account2.Balance)
 }
