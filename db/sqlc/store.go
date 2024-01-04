@@ -56,7 +56,6 @@ type TransferTxResult struct {
 	ToEntry     Entry    `json:"to_entry"`
 }
 
-var txKey = struct{}{}
 
 // TransferTx performs a money transfer from one account to another
 // It creates a transfer record, adds account entries and update accounts' balance within a single transaction
@@ -65,8 +64,6 @@ func (store *Store) TransferTx(ctx context.Context, arg TransferTxParams) (Trans
 
 	err := store.execTx(ctx, func(q *Queries) error {
 		var err error
-
-		txName := ctx.Value(txKey)
 
 		result.Transfer, err = q.CreateTransfer(ctx, CreateTransferParams(arg))
 		// 	CreateTransferParams{
@@ -77,7 +74,6 @@ func (store *Store) TransferTx(ctx context.Context, arg TransferTxParams) (Trans
 		if err != nil {
 			return err
 		}
-		fmt.Println(txName, " create transfer")
 
 		result.FromEntry, err = q.CreateEntry(ctx, CreateEntryParams{
 			AccountID: arg.FromAccountID,
@@ -86,7 +82,6 @@ func (store *Store) TransferTx(ctx context.Context, arg TransferTxParams) (Trans
 		if err != nil {
 			return err
 		}
-		fmt.Println(txName, " create entry 1")
 
 		result.ToEntry, err = q.CreateEntry(ctx, CreateEntryParams{
 			AccountID: arg.ToAccountID,
@@ -95,14 +90,12 @@ func (store *Store) TransferTx(ctx context.Context, arg TransferTxParams) (Trans
 		if err != nil {
 			return err
 		}
-		fmt.Println(txName, " create entry 2")
 
 		// get account -> update account's balance
 		account1, err := q.GetAccountForUpdate(ctx, arg.FromAccountID)
 		if err != nil {
 			return err
 		}
-		fmt.Println(txName, " get account 1")
 
 		result.FromAccount, err = q.UpdateAccount(ctx, UpdateAccountParams{
 			ID:      arg.FromAccountID,
@@ -111,13 +104,11 @@ func (store *Store) TransferTx(ctx context.Context, arg TransferTxParams) (Trans
 		if err != nil {
 			return err
 		}
-		fmt.Println(txName, " update account 1")
 
 		account2, err := q.GetAccountForUpdate(ctx, arg.ToAccountID)
 		if err != nil {
 			return err
 		}
-		fmt.Println(txName, " get account 2")
 
 		result.ToAccount, err = q.UpdateAccount(ctx, UpdateAccountParams{
 			ID:      arg.ToAccountID,
@@ -126,7 +117,6 @@ func (store *Store) TransferTx(ctx context.Context, arg TransferTxParams) (Trans
 		if err != nil {
 			return err
 		}
-		fmt.Println(txName, " update account 2")
 
 		return nil
 	})
