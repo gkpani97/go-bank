@@ -15,7 +15,7 @@ func init() {
 	rng = rand.New(rand.NewSource(time.Now().UnixNano()))
 }
 
-func RandInt(min, max int64) int64{
+func RandomInt(min, max int64) int64{
 	return min + rng.Int63n(max - min + 1)
 }
 
@@ -36,7 +36,7 @@ func RandomOwner() string{
 }
 
 func RandomBalance() int64{
-	return RandInt(0, 1000)
+	return RandomInt(0, 1000)
 }
 
 func RandomCurrency() string{
@@ -46,5 +46,5 @@ func RandomCurrency() string{
 }
 
 func RandomMoney(maxAmt int64) int64 {
-	return RandInt(0, maxAmt)
+	return RandomInt(0, maxAmt)
 }
