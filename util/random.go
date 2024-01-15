@@ -8,18 +8,18 @@ import (
 
 var (
 	alphabet = "abcdefjhijklmnopqrstuvwxhyz"
-	rng *rand.Rand
+	rng      *rand.Rand
 )
 
 func init() {
 	rng = rand.New(rand.NewSource(time.Now().UnixNano()))
 }
 
-func RandomInt(min, max int64) int64{
-	return min + rng.Int63n(max - min + 1)
+func RandomInt(min, max int64) int64 {
+	return min + rng.Int63n(max-min+1)
 }
 
-func RandomString(n int) string{
+func RandomString(n int) string {
 	var sb strings.Builder
 	k := len(alphabet)
 
@@ -31,16 +31,16 @@ func RandomString(n int) string{
 	return sb.String()
 }
 
-func RandomOwner() string{
+func RandomOwner() string {
 	return RandomString(6)
 }
 
-func RandomBalance() int64{
+func RandomBalance() int64 {
 	return RandomInt(0, 1000)
 }
 
-func RandomCurrency() string{
-	currencies := []string{"EUR", "USD", "INR"}
+func RandomCurrency() string {
+	currencies := []string{EUR, USD, INR}
 	n := len(currencies)
 	return currencies[rng.Intn(n)]
 }
