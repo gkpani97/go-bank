@@ -10,17 +10,17 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func createRandomAccount(t *testing.T) Account{
+func createRandomAccount(t *testing.T) Account {
 	user := createRandomUser(t)
 
 	arg := CreateAccountParams{
-		Owner: user.Username,
-		Balance: util.RandomBalance(),
+		Owner:    user.Username,
+		Balance:  util.RandomBalance(),
 		Currency: util.RandomCurrency(),
 	}
 
 	account, err := TestQueries.CreateAccount(context.Background(), arg)
-	
+
 	require.NoError(t, err)
 	require.NotEmpty(t, account)
 
@@ -34,11 +34,11 @@ func createRandomAccount(t *testing.T) Account{
 	return account
 }
 
-func TestCreateAccount(t *testing.T){
+func TestCreateAccount(t *testing.T) {
 	createRandomAccount(t)
 }
 
-func TestGetAccount(t *testing.T){
+func TestGetAccount(t *testing.T) {
 	account1 := createRandomAccount(t)
 	account2, err := TestQueries.GetAccount(context.Background(), account1.ID)
 	require.NoError(t, err)
@@ -53,17 +53,17 @@ func TestGetAccount(t *testing.T){
 
 func TestUpdateAccount(t *testing.T) {
 	account1 := createRandomAccount(t)
-	
+
 	arg := UpdateAccountParams{
-		ID: account1.ID,
+		ID:      account1.ID,
 		Balance: util.RandomBalance(),
 	}
-	
+
 	account2, err := TestQueries.UpdateAccount(context.Background(), arg)
-	
+
 	require.NoError(t, err)
 	require.NotEmpty(t, account2)
-	
+
 	require.Equal(t, account1.ID, account2.ID)
 	require.Equal(t, account1.Owner, account2.Owner)
 	require.Equal(t, arg.Balance, account2.Balance)
@@ -71,7 +71,7 @@ func TestUpdateAccount(t *testing.T) {
 	require.WithinDuration(t, account1.CreatedAt, account2.CreatedAt, time.Second)
 }
 
-func TestDeleteAccount(t *testing.T){
+func TestDeleteAccount(t *testing.T) {
 	account1 := createRandomAccount(t)
 
 	err := TestQueries.DeleteAccount(context.Background(), account1.ID)
@@ -84,21 +84,25 @@ func TestDeleteAccount(t *testing.T){
 	require.Empty(t, account2)
 }
 
-func TestListAccounts(t *testing.T){
-	for i := 0; i < 10; i++{
-		createRandomAccount(t)
+func TestListAccounts(t *testing.T) {
+	var lastAccount Account
+
+	for i := 0; i < 10; i++ {
+		lastAccount = createRandomAccount(t)
 	}
 
-	arg:= ListAccountsParams{
-		Limit: 5,
-		Offset: 5,
+	arg := ListAccountsParams{
+		Owner:  lastAccount.Owner,
+		Limit:  5,
+		Offset: 0,
 	}
 
 	accounts, err := TestQueries.ListAccounts(context.Background(), arg)
 	require.NoError(t, err)
-	require.Len(t, accounts, 5)
+	require.NotEmpty(t, accounts)
 
-	for _, account := range accounts{
+	for _, account := range accounts {
 		require.NotEmpty(t, account)
+		require.Equal(t, account.Owner, lastAccount.Owner)
 	}
 }
