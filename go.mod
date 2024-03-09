@@ -1,6 +1,6 @@
 module github.com/gkpani97/go-bank
 
-go 1.21.0
+go 1.22.0
 
 require (
 	github.com/aead/chacha20poly1305 v0.0.0-20170617001512-233f39982aeb
