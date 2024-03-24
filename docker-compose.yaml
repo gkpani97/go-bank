@@ -5,7 +5,7 @@ services:
     environment:
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=secret
-      - POSTGRES_DB=go-bank
+      - POSTGRES_DB=go_bank
   api:
     build:
       context: .
@@ -13,6 +13,6 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - DB_SOURCE=postgresql://root:secret@postgres:5432/go-bank?sslmode=disable
+      - DB_SOURCE=postgresql://root:secret@postgres:5432/go_bank?sslmode=disable
     entrypoint: [ "/app/wait-for.sh" , "postgres:5432" , "--" , "/app/start.sh" ]
     command: ["/app/main"]

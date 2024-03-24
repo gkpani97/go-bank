@@ -25,7 +25,7 @@ jobs:
           env:
             POSTGRES_USER: root
             POSTGRES_PASSWORD: secret
-            POSTGRES_DB: go-bank
+            POSTGRES_DB: go_bank
           # Set health checks to wait until postgres has started
           ports:
               # Maps tcp port 5432 on service container to the host

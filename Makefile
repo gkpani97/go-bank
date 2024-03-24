@@ -2,22 +2,22 @@ postgres:
 	docker run --name postgres15 --network bank-network -p 5432:5432 -e POSTGRES_USER=root -e POSTGRES_PASSWORD=secret -d postgres:15.4-alpine3.18
 
 createdb:
-	docker exec -it postgres15 createdb --username=root --owner=root go-bank
+	docker exec -it postgres15 createdb --username=root --owner=root go_bank
 
 dropdb:
-	docker exec -it postgres15 dropdb go-bank
+	docker exec -it postgres15 dropdb go_bank
 
 migrateup:
-	migrate -path db/migration -database "postgresql://root:secret@localhost:5432/go-bank?sslmode=disable" -verbose up
+	migrate -path db/migration -database "postgresql://root:bQrBJfAuvpCSNo6fUjZp@go-bank.ctcqe2im20nl.us-east-1.rds.amazonaws.com/go_bank" -verbose up
 
 migrateup1:
-	migrate -path db/migration -database "postgresql://root:secret@localhost:5432/go-bank?sslmode=disable" -verbose up 1
+	migrate -path db/migration -database "postgresql://root:secret@localhost:5432/go_bank?sslmode=disable" -verbose up 1
 
 migratedown:
-	migrate -path db/migration -database "postgresql://root:secret@localhost:5432/go-bank?sslmode=disable" -verbose down
+	migrate -path db/migration -database "postgresql://root:secret@localhost:5432/go_bank?sslmode=disable" -verbose down
 
 migratedown1:
-	migrate -path db/migration -database "postgresql://root:secret@localhost:5432/go-bank?sslmode=disable" -verbose down 1
+	migrate -path db/migration -database "postgresql://root:secret@localhost:5432/go_bank?sslmode=disable" -verbose down 1
 
 sqlc:
 	docker run --rm -v "$(CURDIR):/src" -w /src sqlc/sqlc generate
